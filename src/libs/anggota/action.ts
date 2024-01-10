@@ -8,7 +8,7 @@ export const getAnggota = async () => {
 };
 
 export const getAnggotaById = async (id: string) => {
-  const transaksi = await prisma.transaksi.findUnique({
+  const transaksi = await prisma.anggota.findUnique({
     where: {
       id,
     },
@@ -18,8 +18,38 @@ export const getAnggotaById = async (id: string) => {
 
 export const tambahAnggota = async (transaksi: any) => {
   try {
-    const newTransaksi = await prisma.anggota.create({
+    const newTransaksi = await prisma.anggota.update({
+      where: {
+        id: transaksi.id,
+      },
       data: transaksi,
+    });
+    return newTransaksi;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const ubahAnggota = async (id: string, transaksi: any) => {
+  try {
+    const newTransaksi = await prisma.anggota.update({
+      where: {
+        id,
+      },
+      data: transaksi,
+    });
+    return newTransaksi;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
+export const hapusAnggota = async (id: string) => {
+  try {
+    const newTransaksi = await prisma.anggota.delete({
+      where: {
+        id,
+      },
     });
     return newTransaksi;
   } catch (error: any) {

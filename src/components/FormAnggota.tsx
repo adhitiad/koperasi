@@ -3,9 +3,11 @@
 import { tambahAnggota } from "@/libs/anggota/action";
 import { Role } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const FormAnggota = () => {
+  const router = useRouter();
   const {
     mutate: tambah,
     isError,
@@ -13,7 +15,42 @@ const FormAnggota = () => {
     isSuccess,
   } = useMutation({
     mutationFn: (data: any) => {
-      return tambahAnggota(data);
+      const newData = {
+        name: data.name,
+        email: data.email,
+        username: data.username,
+        alamat: data.alamat,
+        desa: data.desa,
+        kecamatan: data.kecamatan,
+        kota: data.kota,
+        provinsi: data.provinsi,
+        kodePos: data.kodePos,
+        tglLahir: data.tglLahir,
+        tempatLahir: data.tempatLahir,
+        pendidikan: data.pendidikan,
+        pekerjaan: data.pekerjaan,
+        agama: data.agama,
+        gender: data.gender,
+        status: data.status,
+        pendapatan: data.pendapatan,
+        noRek: data.noRek,
+        bank: data.bank,
+        cabang: data.cabang,
+        noKtp: data.noKtp,
+        noKk: data.noKk,
+        noNpwp: data.noNpwp,
+        noTelp: data.noTelp,
+        noHp: data.noHp,
+        role: data.role,
+        password: data.password,
+        createdAt: data.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        deletedAt: new Date().toISOString(),
+        deletedReason: "",
+        deleted: false,
+      };
+
+      return tambahAnggota(newData);
     },
   });
 
@@ -24,7 +61,7 @@ const FormAnggota = () => {
   };
 
   if (isSuccess) {
-    return <div>Success</div>;
+    return router.push("/anggota");
   }
 
   if (isError) {
@@ -33,7 +70,10 @@ const FormAnggota = () => {
 
   return (
     <>
-      <form action={handleSubmit} className="w-1/3 mx-auto mt-4">
+      <form
+        action={handleSubmit}
+        className="w-full grid grid-cols-4 gap-4 py-8"
+      >
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -447,24 +487,12 @@ const FormAnggota = () => {
           </label>
           <input
             type="date"
+            id="tglLahir"
+            name="tglLahir"
             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
           />
         </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="telp"
-            className="block text-gray-700 text-sm font-bold mb-2"
-          >
-            Telp
-          </label>
-          <input
-            type="text"
-            id="telp"
-            name="telp"
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
         <div className="flex items-center justify-between">
           <button
             type="submit"

@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import Redux from "./Redux";
 import QueryProviders from "./QueryProviders";
+import ProviderAuth from "@/utils/ProviderAuth";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <Redux>
           <QueryProviders>
-            <NavBar />
-            {children}
+            <ProviderAuth>
+              <NavBar />
+              {children}
+            </ProviderAuth>
           </QueryProviders>
         </Redux>
       </body>
