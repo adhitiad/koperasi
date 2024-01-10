@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  providerType       String
+  providerId         String
+  providerAccountId  String
+  refreshToken       String?
+  accessToken        String?
+  accessTokenExpires DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
+
+  @@unique([providerId, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  userId       String
+  expires      DateTime
+  sessionToken String   @unique
+  accessToken  String   @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
+}
+
+model VerificationRequest {
+  id         String   @id @default(cuid())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id        String      @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  email     String
+  password  String
+  role      Role
+  isActive  Boolean
+  createdAt DateTime
+  updatedAt DateTime
+  Transaksi Transaksi[]
+  Account   Account[]
+  Session   Session[]
+}
+
+enum Role {
+  USER
+  ADMIN
+  SUPERADMIN
+  KASIR
+}
+
+model Product {
+  id        String   @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  price     Int
+  stock     Int
+  image     String
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+  deleted   Boolean
+}
+
+model TipeTransaksi {
+  id        String      @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  createdAt DateTime
+  updatedAt DateTime
+  Transaksi Transaksi[]
+}
+
+model TipeAnggota {
+  id        String      @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  createdAt DateTime
+  updatedAt DateTime
+  Transaksi Transaksi[]
+}
+
+model Transaksi {
+  id              String        @id @unique @default(cuid()) @db.VarChar(50)
+  tipeTransaksi   TipeTransaksi @relation(fields: [tipeTransaksiId], references: [id])
+  tipeAnggota     TipeAnggota   @relation(fields: [tipeAnggotaId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+  createdAt       DateTime
+  updatedAt       DateTime
+  deletedAt       DateTime
+  deletedBy       String
+  deletedReason   String
+  deleted         Boolean
+  laporan         Laporan       @relation(fields: [laporanId], references: [id])
+  anggota         Anggota       @relation(fields: [anggotaId], references: [id])
+  pinjaman        Pinjaman      @relation(fields: [pinjamanId], references: [id])
+  simpanan        Simpanan      @relation(fields: [simpananId], references: [id])
+  bukuBesar       BukuBesar     @relation(fields: [bukuBesarId], references: [id])
+  rekap           Rekap         @relation(fields: [rekapId], references: [id])
+  anggaran        Anggaran      @relation(fields: [anggaranId], references: [id])
+  pengelolaan     Pengelolaan   @relation(fields: [pengelolaanId], references: [id])
+  keterangan      String
+  nominal         Int
+  kategori        String
+  deskripsi       String
+  jenis           String
+  tipeTransaksiId String        @db.VarChar(50)
+  tipeAnggotaId   String        @db.VarChar(50)
+  userId          String        @db.VarChar(50)
+  laporanId       String        @db.VarChar(50)
+  anggotaId       String        @db.VarChar(50)
+  pinjamanId      String        @db.VarChar(50)
+  simpananId      String        @db.VarChar(50)
+  bukuBesarId     String        @db.VarChar(50)
+  rekapId         String        @db.VarChar(50)
+  anggaranId      String        @db.VarChar(50)
+  pengelolaanId   String        @db.VarChar(50)
+}
+
+model Laporan {
+  id String @id @unique @default(cuid()) @db.VarChar(50)
+
+  name String
+
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+  deletedBy String
+  deleted   Boolean
+
+  Transaksi Transaksi[]
+}
+
+model Anggota {
+  id String @id @unique @default(cuid()) @db.VarChar(50)
+
+  name        String
+  email       String
+  username    String
+  alamat      String
+  desa        String
+  kecamatan   String
+  kota        String
+  provinsi    String
+  kodePos     String
+  tglLahir    String
+  tempatLahir String?
+  pendidikan  String?
+  pekerjaan   String?
+  agama       String?
+  gender      String?
+  status      String?
+  pendapatan  String?
+  noRek       String?
+  bank        String?
+  cabang      String?
+  noKtp       String?
+  noKk        String?
+  noNpwp      String?
+  noTelp      String?
+  noHp        String?
+  noReferensi String?
+  password    String?
+  role        Role
+  createdAt   DateTime
+  Transaksi   Transaksi[]
+
+  updatedAt     DateTime
+  deletedAt     DateTime
+  deleted       Boolean
+  deletedReason String
+  Pinjaman      Pinjaman[]
+  Simpanan      Simpanan[]
+  BukuBesar     BukuBesar[]
+  Rekap         Rekap[]
+}
+
+model Pinjaman {
+  id          String      @id @unique @default(cuid()) @db.VarChar(50)
+  nama        String
+  jangka      Int
+  bunga       Float
+  deskripsi   String
+  jmlPinjaman Int
+  jmlAngsuran Int
+  jmlBunga    Int
+  jmlSisa     Int
+  pokok       Int
+  jatuhTempo  DateTime
+  createdAt   DateTime
+  updatedAt   DateTime
+  deletedAt   DateTime
+  deleted     Boolean
+  Transaksi   Transaksi[]
+  Anggota     Anggota?    @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?     @db.VarChar(50)
+}
+
+model Simpanan {
+  id        String @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  deskripsi String
+  nominal   Int
+  jenis     String
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  Transaksi Transaksi[]
+  Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
+  anggotaId String?     @db.VarChar(50)
+}
+
+model BukuBesar {
+  id        String @id @unique @default(cuid()) @db.VarChar(50)
+  name      String
+  deskripsi String
+  nominal   Int
+  jenis     String
+
+  Transaksi Transaksi[]
+  Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
+  anggotaId String?     @db.VarChar(50)
+}
+
+model Rekap {
+  id        String      @id @unique @default(cuid()) @db.VarChar(50)
+  Transaksi Transaksi[]
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+  deleted   Boolean
+  Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
+  anggotaId String?     @db.VarChar(50)
+}
+
+model Anggaran {
+  id         String @id @unique @default(cuid()) @db.VarChar(50)
+  keterangan String
+  nominal    Int
+  kategori   String
+  deskripsi  String
+  jenis      String
+
+  createdAt DateTime
+  updatedAt DateTime
+
+  Transaksi Transaksi[]
+}
+
+model Pengelolaan {
+  id         String   @id @unique @default(cuid()) @db.VarChar(50)
+  name       String
+  deskripsi  String
+  nominal    Int
+  jenis      String
+  keterangan String
+  createdAt  DateTime
+  updatedAt  DateTime
+
+  Transaksi Transaksi[]
+}
