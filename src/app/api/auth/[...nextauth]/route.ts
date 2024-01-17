@@ -1,11 +1,19 @@
-import NextAuth, { RequestInternal } from "next-auth";
+import NextAuth, { DefaultSession, RequestInternal } from "next-auth";
 import GithubProviders from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProviders from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/libs/prisma";
+import { Role } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 import * as dotenv from "dotenv";
+
+interface Session extends DefaultSession {
+  user: {
+    id: string;
+  } & DefaultSession["user"];
+}
 
 dotenv.config({
   path: `.env`,
@@ -25,24 +33,47 @@ export const authOptions = {
     Credentials({
       name: "credentials",
       credentials: {
-        username: { label: "username", type: "text" },
-        password: { label: "password", type: "password" },
+        email: {
+          label: "email",
+          type: "text",
+          placeholder: "jsmith@example.com",
+        },
+        password: {
+          label: "password",
+          type: "password",
+          placeholder: "••••••••••",
+        },
       },
-      async authorize(credentials: any) {
-        if (credentials) {
-          const user = await prisma.user.findFirst({
-            where: { username: credentials.username as string },
-          });
-
-          if (user?.password === credentials.password) {
-            return user;
-          }
+      async authorize(credentials: any, req) {
+        if (!credentials.email || !credentials.password) {
+          throw new Error("Please enter an email and password");
         }
 
-        return null;
+        const user = await prisma.user.findUnique({
+          where: {
+            id: credentials?.id,
+            email: credentials?.email,
+          },
+        });
+
+        if (!user) {
+          throw new Error("No user found");
+        }
+
+        const isPasswordValid = bcrypt.compare(
+          credentials.password,
+          user.password as string
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return user;
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions as any);

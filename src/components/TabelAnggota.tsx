@@ -130,7 +130,7 @@ const TabelAnggota = () => {
                 </th>
                 <td className="px-6 py-4">{anggota?.name}</td>
                 <td className="px-6 py-4">{anggota?.address}</td>
-                <td className="px-6 py-4">{anggota?.telp}</td>
+                <td className="px-6 py-4">{anggota?.phoneNumber}</td>
                 <td className="px-6 py-4">
                   <button
                     onClick={() => handleEdit(anggota?.id)}

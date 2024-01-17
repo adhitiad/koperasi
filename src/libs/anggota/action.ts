@@ -18,10 +18,7 @@ export const getAnggotaById = async (id: string) => {
 
 export const tambahAnggota = async (transaksi: any) => {
   try {
-    const newTransaksi = await prisma.anggota.update({
-      where: {
-        id: transaksi.id,
-      },
+    const newTransaksi = await prisma.anggota.create({
       data: transaksi,
     });
     return newTransaksi;

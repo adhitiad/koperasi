@@ -1,8 +1,17 @@
 import Link from "next/link";
 import React from "react";
-import { FaCartShopping } from "react-icons/fa6";
+import { authUserSession } from "@/libs/userSession";
+import {
+  FaCartShopping,
+  FaUser,
+  FaArrowLeft,
+  FaArrowRight,
+} from "react-icons/fa6";
+import { signIn, signOut } from "next-auth/react";
 
-const NavBar = () => {
+const NavBar = async () => {
+  const user = await authUserSession();
+
   return (
     <nav className="bg-white border-gray-200 px-2 sm:px-4 py-2.5 rounded dark:bg-gray-800">
       <div className="container flex flex-wrap justify-between items-center mx-auto">
@@ -24,13 +33,21 @@ const NavBar = () => {
           >
             <FaCartShopping />
           </button>
-
-          <Link
-            href="#"
-            className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
-          >
-            Login
-          </Link>
+          {user ? (
+            <Link
+              href="/api/auth/signout"
+              className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+            >
+              <FaArrowRight />
+            </Link>
+          ) : (
+            <Link
+              href="/api/auth/signin"
+              className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 dark:hover:bg-gray-700 dark:focus:ring-gray-800"
+            >
+              <FaArrowLeft />
+            </Link>
+          )}
         </div>
       </div>
     </nav>

@@ -1,279 +1,289 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  directUrl         = env("DATABASE_DIRECT_URL")
+  relationMode      = "prisma"
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 model Account {
-  id                 String    @id @default(cuid())
-  userId             String
-  providerType       String
-  providerId         String
-  providerAccountId  String
-  refreshToken       String?
-  accessToken        String?
-  accessTokenExpires DateTime?
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-  user               User      @relation(fields: [userId], references: [id])
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
-  @@unique([providerId, providerAccountId])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
   id           String   @id @default(cuid())
+  sessionToken String   @unique
   userId       String
   expires      DateTime
-  sessionToken String   @unique
-  accessToken  String   @unique
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  user         User     @relation(fields: [userId], references: [id])
-}
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-model VerificationRequest {
-  id         String   @id @default(cuid())
-  identifier String
-  token      String   @unique
-  expires    DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@unique([identifier, token])
+  @@index([userId])
 }
 
 model User {
-  id        String      @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  email     String
-  password  String
-  role      Role
-  isActive  Boolean
-  createdAt DateTime
-  updatedAt DateTime
-  Transaksi Transaksi[]
-  Account   Account[]
-  Session   Session[]
+  id                     String             @id @default(cuid())
+  name                   String?
+  email                  String?            @unique
+  emailVerified          DateTime?
+  image                  String?
+  password               String?
+  verificationToken      VerificationToken? @relation(fields: [verificationTokenToken], references: [token])
+  roles                  Role[]
+  accounts               Account[]
+  sessions               Session[]
+  verificationTokenToken String?
+  UserSettings           UserSettings?
+  UserHistory            UserHistory?
+
+  @@index([verificationTokenToken])
 }
 
 enum Role {
   USER
   ADMIN
   SUPERADMIN
-  KASIR
+  TELLER
+  CUSTOMER
+  EMPLOYEE
+  MANAGER
+  OWNER
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  User       User[]
+
+  @@unique([identifier, token])
+}
+
+model UserSettings {
+  id         String @id @default(cuid())
+  userId     String
+  currency   String
+  language   String
+  timezone   String
+  dateFormat String
+  timeFormat String
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model UserHistory {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  createdAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
 }
 
 model Product {
-  id        String   @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  price     Int
-  stock     Int
-  image     String
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
-  deleted   Boolean
-}
-
-model TipeTransaksi {
-  id        String      @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  createdAt DateTime
-  updatedAt DateTime
-  Transaksi Transaksi[]
-}
-
-model TipeAnggota {
-  id        String      @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  createdAt DateTime
-  updatedAt DateTime
-  Transaksi Transaksi[]
-}
-
-model Transaksi {
-  id              String        @id @unique @default(cuid()) @db.VarChar(50)
-  tipeTransaksi   TipeTransaksi @relation(fields: [tipeTransaksiId], references: [id])
-  tipeAnggota     TipeAnggota   @relation(fields: [tipeAnggotaId], references: [id])
-  user            User          @relation(fields: [userId], references: [id])
-  createdAt       DateTime
-  updatedAt       DateTime
-  deletedAt       DateTime
-  deletedBy       String
-  deletedReason   String
-  deleted         Boolean
-  laporan         Laporan       @relation(fields: [laporanId], references: [id])
-  anggota         Anggota       @relation(fields: [anggotaId], references: [id])
-  pinjaman        Pinjaman      @relation(fields: [pinjamanId], references: [id])
-  simpanan        Simpanan      @relation(fields: [simpananId], references: [id])
-  bukuBesar       BukuBesar     @relation(fields: [bukuBesarId], references: [id])
-  rekap           Rekap         @relation(fields: [rekapId], references: [id])
-  anggaran        Anggaran      @relation(fields: [anggaranId], references: [id])
-  pengelolaan     Pengelolaan   @relation(fields: [pengelolaanId], references: [id])
-  keterangan      String
-  nominal         Int
-  kategori        String
-  deskripsi       String
-  jenis           String
-  tipeTransaksiId String        @db.VarChar(50)
-  tipeAnggotaId   String        @db.VarChar(50)
-  userId          String        @db.VarChar(50)
-  laporanId       String        @db.VarChar(50)
-  anggotaId       String        @db.VarChar(50)
-  pinjamanId      String        @db.VarChar(50)
-  simpananId      String        @db.VarChar(50)
-  bukuBesarId     String        @db.VarChar(50)
-  rekapId         String        @db.VarChar(50)
-  anggaranId      String        @db.VarChar(50)
-  pengelolaanId   String        @db.VarChar(50)
-}
-
-model Laporan {
-  id String @id @unique @default(cuid()) @db.VarChar(50)
-
-  name String
-
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
-  deletedBy String
-  deleted   Boolean
-
-  Transaksi Transaksi[]
-}
-
-model Anggota {
-  id String @id @unique @default(cuid()) @db.VarChar(50)
-
+  id          String @id @default(cuid())
   name        String
-  email       String
-  username    String
-  alamat      String
-  desa        String
-  kecamatan   String
-  kota        String
-  provinsi    String
-  kodePos     String
-  tglLahir    String
-  tempatLahir String?
-  pendidikan  String?
-  pekerjaan   String?
-  agama       String?
-  gender      String?
-  status      String?
-  pendapatan  String?
-  noRek       String?
-  bank        String?
-  cabang      String?
-  noKtp       String?
-  noKk        String?
-  noNpwp      String?
-  noTelp      String?
-  noHp        String?
-  noReferensi String?
-  password    String?
-  role        Role
-  createdAt   DateTime
-  Transaksi   Transaksi[]
+  price       Int
+  quantity    Int
+  description String
 
-  updatedAt     DateTime
-  deletedAt     DateTime
-  deleted       Boolean
-  deletedReason String
-  Pinjaman      Pinjaman[]
-  Simpanan      Simpanan[]
-  BukuBesar     BukuBesar[]
-  Rekap         Rekap[]
+  image       String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Order       Order?     @relation(fields: [orderId], references: [id])
+  orderId     String?
+  Cart        Cart?      @relation(fields: [cartId], references: [id])
+  cartId      String?
+  Transaksi   Transaksi? @relation(fields: [transaksiId], references: [id])
+  transaksiId String?
+  BukuBesar   BukuBesar? @relation(fields: [bukuBesarId], references: [id])
+  bukuBesarId String?
+
+  @@index([orderId])
+  @@index([cartId])
+  @@index([transaksiId])
+  @@index([bukuBesarId])
 }
 
-model Pinjaman {
-  id          String      @id @unique @default(cuid()) @db.VarChar(50)
-  nama        String
-  jangka      Int
-  bunga       Float
-  deskripsi   String
-  jmlPinjaman Int
-  jmlAngsuran Int
-  jmlBunga    Int
-  jmlSisa     Int
-  pokok       Int
-  jatuhTempo  DateTime
-  createdAt   DateTime
-  updatedAt   DateTime
-  deletedAt   DateTime
-  deleted     Boolean
-  Transaksi   Transaksi[]
-  Anggota     Anggota?    @relation(fields: [anggotaId], references: [id])
-  anggotaId   String?     @db.VarChar(50)
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
-model Simpanan {
-  id        String @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  deskripsi String
-  nominal   Int
-  jenis     String
+model ProductCategory {
+  id         String   @id @default(cuid())
+  productId  String
+  categoryId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
 
-  createdAt DateTime
-  updatedAt DateTime
+model Cart {
+  id          String    @id @default(cuid())
+  userId      String
+  totalAmount Int
+  totalItems  Int
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  Anggota     Anggota?  @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?
 
-  Transaksi Transaksi[]
-  Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
-  anggotaId String?     @db.VarChar(50)
+  @@index([anggotaId])
+}
+
+model Order {
+  id          String     @id @default(cuid())
+  userId      String
+  orderDate   DateTime
+  totalAmount Int
+  totalItems  Int
+  products    Product[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Transaksi   Transaksi? @relation(fields: [transaksiId], references: [id])
+  transaksiId String?
+  Anggota     Anggota?   @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?
+  Credit      Credit?    @relation(fields: [creditId], references: [id])
+  creditId    String?
+
+  @@index([transaksiId])
+  @@index([anggotaId])
+  @@index([creditId])
 }
 
 model BukuBesar {
-  id        String @id @unique @default(cuid()) @db.VarChar(50)
-  name      String
-  deskripsi String
-  nominal   Int
-  jenis     String
+  id                    String   @id @default(cuid())
+  userId                String
+  transaksiDate         DateTime
+  totalAmount           Int
+  totalItems            Int
+  totalHutang           Int
+  totalPiutang          Int
+  totalPenjualan        Int
+  totalPembelian        Int
+  totalReturPenjualan   Int
+  totalReturPembelian   Int
+  totalPendapatan       Int
+  totalPengeluaran      Int
+  totalModal            Int
+  totalLaba             Int
+  totalRugi             Int
+  totalKeuntungan       Int
+  totalKeuntunganBersih Int
+  totalSaldo            Int
+  totalSaldoBersih      Int
 
-  Transaksi Transaksi[]
+  products    Product[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Transaksi   Transaksi? @relation(fields: [transaksiId], references: [id])
+  transaksiId String?
+  Anggota     Anggota?   @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?
+
+  @@index([transaksiId])
+  @@index([anggotaId])
+}
+
+model Transaksi {
+  id             String   @id @default(cuid())
+  userId         String
+  transaksiDate  DateTime
+  totalAmount    Int
+  totalItems     Int
+  jenisTransaksi String
+
+  Order     Order[]
+  BukuBesar BukuBesar[]
+  products  Product[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
   Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
-  anggotaId String?     @db.VarChar(50)
+  anggotaId String?
+  Credit    Credit[]
+  Simpanan  Simpanan[]
+
+  @@index([anggotaId])
 }
 
-model Rekap {
-  id        String      @id @unique @default(cuid()) @db.VarChar(50)
-  Transaksi Transaksi[]
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
-  deleted   Boolean
-  Anggota   Anggota?    @relation(fields: [anggotaId], references: [id])
-  anggotaId String?     @db.VarChar(50)
+model Anggota {
+  id          String      @id @default(cuid())
+  name        String
+  address     String
+  phoneNumber String
+  email       String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  BukuBesar   BukuBesar[]
+  Transaksi   Transaksi[]
+  Order       Order[]
+
+  Cart     Cart[]
+  Credit   Credit[]
+  Simpanan Simpanan[]
 }
 
-model Anggaran {
-  id         String @id @unique @default(cuid()) @db.VarChar(50)
-  keterangan String
-  nominal    Int
-  kategori   String
-  deskripsi  String
-  jenis      String
+model Credit {
+  id          String   @id @default(cuid())
+  amount      Int
+  description String
+  kegunaan    String
+  bunga       Int
+  tenor       Int
+  jatuhTempo  DateTime
+  totalBayar  Int
 
-  createdAt DateTime
-  updatedAt DateTime
+  Order       Order[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Anggota     Anggota?   @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?
+  Transaksi   Transaksi? @relation(fields: [transaksiId], references: [id])
+  transaksiId String?
 
-  Transaksi Transaksi[]
+  @@index([anggotaId])
+  @@index([transaksiId])
 }
 
-model Pengelolaan {
-  id         String   @id @unique @default(cuid()) @db.VarChar(50)
-  name       String
-  deskripsi  String
-  nominal    Int
-  jenis      String
-  keterangan String
-  createdAt  DateTime
-  updatedAt  DateTime
+model Simpanan {
+  id          String     @id @default(cuid())
+  name        String
+  amount      Int
+  description String
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  Anggota     Anggota?   @relation(fields: [anggotaId], references: [id])
+  anggotaId   String?
+  Transaksi   Transaksi? @relation(fields: [transaksiId], references: [id])
+  transaksiId String?
 
-  Transaksi Transaksi[]
+  @@index([anggotaId])
+  @@index([transaksiId])
 }

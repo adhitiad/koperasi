@@ -1,25 +1,21 @@
-"use client";
 import React from "react";
 import SideBar from "@/components/SideBar";
-import ServerSesion from "@/libs/ServerSesion";
+import { authUserSession } from "@/libs/userSession";
 import Link from "next/link";
-import { signIn } from "next-auth/react";
+
 const layout = async ({ children }: { children: React.ReactNode }) => {
-  const session = await ServerSesion();
+  const session = await authUserSession();
 
   if (!session) {
     return (
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">Please Login</h1>
-        <Link
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-900"
-          href="/api/auth/signin"
-        >
-          Login
+      <div className="flex justify-center items-center h-screen">
+        <Link href="/api/auth/signin">
+          <button className="btn btn-primary">Login</button>
         </Link>
       </div>
     );
   }
+
   return (
     <>
       <SideBar>{children}</SideBar>
