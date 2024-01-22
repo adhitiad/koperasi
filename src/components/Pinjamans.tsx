@@ -18,7 +18,11 @@ interface Pinjaman {
 const Pinjamans = () => {
   const router = useRouter();
 
-  const { data: pinjamans, isLoading } = useQuery({
+  const {
+    data: pinjamans,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["pinjamans"],
     queryFn: async () => {
       const data = await getPinjaman();
@@ -63,7 +67,62 @@ const Pinjamans = () => {
 
   return (
     <>
-      <div className="w-full bg-white rounded-xl p-10"></div>
+      <div className="w-full bg-white rounded-xl p-10">
+        <form action={tambah} className="w-full flex flex-col gap-4">
+          <div className="w-full flex flex-col gap-4">
+            <p className="text-xl font-bold">Pinjaman</p>
+          </div>
+          <div className="w-full flex flex-col gap-4">
+            <input
+              type="number"
+              name="amount"
+              placeholder="Amount"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="text"
+              name="description"
+              placeholder="Description"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="text"
+              name="kegunaan"
+              placeholder="Kegunaan"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="number"
+              name="bunga"
+              placeholder="Bunga"
+              className="input input-bordered w-full"
+            />{" "}
+            <input
+              type="number"
+              name="tenor"
+              placeholder="Tenor"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="date"
+              name="jatuhTempo"
+              placeholder="Jatuh Tempo"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="number"
+              name="totalBayar"
+              placeholder="Total Bayar"
+              className="input input-bordered w-full"
+            />
+          </div>
+          <div className="w-full flex justify-end">
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     </>
   );
 };

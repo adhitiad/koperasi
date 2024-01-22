@@ -1,5 +1,4 @@
-import NextAuth, { AuthOptions } from "next-auth";
-import { Adapter } from "next-auth/adapters";
+import NextAuth, { AuthOptions, NextAuthOptions } from "next-auth";
 import GithubProviders from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProviders from "next-auth/providers/google";
@@ -13,8 +12,8 @@ dotenv.config({
   path: `.env`,
 });
 
-const authOption: AuthOptions = {
-  adapter: PrismaAdapter(prisma) as Adapter,
+const authOption = {
+  adapter: PrismaAdapter(prisma),
   providers: [
     GithubProviders({
       clientId: process.env.GITHUB_ID as string,
@@ -68,8 +67,25 @@ const authOption: AuthOptions = {
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: "jwt",
+
+    maxAge: 60 * 60 * 24 * 30,
+    updateAge: 60 * 60 * 24 * 30,
+
+    jwt: {
+      secret: process.env.JWT_SECRET,
+      maxAge: 60 * 60 * 24 * 30,
+    },
+  },
 };
 
-const handler = NextAuth(authOption);
+const handler = NextAuth(authOption as NextAuthOptions as AuthOptions);
 
-export { handler as POST, handler as GET };
+export {
+  handler as POST,
+  handler as GET,
+  handler as DELETE,
+  handler as PUT,
+  authOption,
+};
