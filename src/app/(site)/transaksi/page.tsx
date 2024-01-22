@@ -19,12 +19,12 @@ const Transaksi = () => {
       return;
     }
 
-    const newTransaksi = {
+    const newTransaksi: { keterangan: string; nominal: number } = {
       keterangan: keterangan,
       nominal: parseInt(nominal),
     };
 
-    setTransaksi([...transaksi, newTransaksi]);
+    setTransaksi(newTransaksi as any);
   };
 
   const hitungSaldo = () => {
