@@ -1,4 +1,5 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import { Adapter } from "next-auth/adapters";
 import GithubProviders from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProviders from "next-auth/providers/google";
@@ -6,20 +7,14 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/libs/prisma";
 import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
 import * as dotenv from "dotenv";
-type AuthOptions = {
-  providers: any[];
-  secret: any;
-  adapter: any;
-};
 
 dotenv.config({
   path: `.env`,
 });
 
-export const authOption: AuthOptions = {
-  adapter: PrismaAdapter(prisma),
+export const authOption: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GithubProviders({
       clientId: process.env.GITHUB_ID as string,
