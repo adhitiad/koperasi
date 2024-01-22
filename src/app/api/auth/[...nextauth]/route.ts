@@ -8,12 +8,17 @@ import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 import * as dotenv from "dotenv";
+type AuthOptions = {
+  providers: any[];
+  secret: any;
+  adapter: any;
+};
 
 dotenv.config({
   path: `.env`,
 });
 
-export const authOption: any = {
+export const authOption: AuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProviders({
