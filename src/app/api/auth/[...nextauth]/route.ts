@@ -1,4 +1,4 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth, { AuthOptions } from "next-auth";
 import { Adapter } from "next-auth/adapters";
 import GithubProviders from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
@@ -13,7 +13,7 @@ dotenv.config({
   path: `.env`,
 });
 
-export const authOption: NextAuthOptions = {
+export const authOption: AuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GithubProviders({
