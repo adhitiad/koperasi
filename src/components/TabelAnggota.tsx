@@ -26,23 +26,48 @@ const TabelAnggota = () => {
     },
   });
 
-  const handlePaginate = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
-    if (value === "all") {
-      router.push("/anggota");
+  const handleFilter = async (e: any) => {
+    const data = await getAnggota();
+    return data.filter((data: any) => {
+      return data.name.match(e.target.value);
+    });
+  };
+
+  const handleNext = async () => {
+    const data = await handlePage(1);
+    return data;
+  };
+
+  const handlePrevPage = async () => {
+    const data = await handlePage(-1);
+    return data;
+  };
+
+  const handlePagination = async (page: number) => {
+    const data = await handlePage(page);
+    return data;
+  };
+
+  const handlePage = async (page: number) => {
+    const data = await getAnggota();
+    return data.slice(page * 10 - 10, page * 10);
+  };
+
+  const handleJumlahHalaman = () => {
+    if (anggotas) {
+      return Math.ceil(anggotas.length / 10);
     } else {
-      router.push(`/anggota?page=${value}`);
+      return 1;
     }
   };
 
   const handleDelete = async (id: string) => {
     await hapusAnggota(id);
     const res = await getAnggotaById(id);
-    if (res) {
-      router.push("/anggota");
-    } else {
-      console.log("Something went wrong");
-    }
+    alert(res?.name + " Berhasil" + " Dihapus" + status);
+    setTimeout(() => {
+      router.refresh();
+    }, 2000);
   };
 
   const handleEdit = (id: string) => {
@@ -78,16 +103,15 @@ const TabelAnggota = () => {
       <div className="overflow-x-auto w-full h-full p-2">
         <div className="flex justify-between items-center my-4">
           <div className="w-1/3">
-            <select onChange={handlePaginate} className="w-full">
-              <option value="all">All</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </select>
+            <p className="text-gray-900 text-lg font-bold">
+              Total Anggota : {anggotas?.length}
+            </p>
           </div>
-          <div className="w-1/3"></div>
+          <div className="w-1/3">
+            <p className="text-gray-900 text-lg font-bold">
+              Jumlah Halaman : {handleJumlahHalaman()}
+            </p>
+          </div>
         </div>
         <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -150,6 +174,21 @@ const TabelAnggota = () => {
             ))}
           </tbody>
         </table>
+        {/* PAGINATION */}
+        <div className="flex items-center justify-center mt-4">
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
+            onClick={handlePrevPage}
+          >
+            Prev
+          </button>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-2"
+            onClick={handleNext}
+          >
+            Next
+          </button>
+        </div>
       </div>
     </>
   );

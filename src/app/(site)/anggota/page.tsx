@@ -26,7 +26,7 @@ const Anggota = () => {
             placeholder="Search..."
             name="search"
             id="search"
-            autoComplete="off"
+            autoComplete="on"
             className="w-full p-2 rounded-md"
           />
         </div>

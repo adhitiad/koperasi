@@ -9,12 +9,6 @@ import bcrypt from "bcryptjs";
 
 import * as dotenv from "dotenv";
 
-interface Session extends DefaultSession {
-  user: {
-    id: string;
-  } & DefaultSession["user"];
-}
-
 dotenv.config({
   path: `.env`,
 });

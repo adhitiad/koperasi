@@ -9,7 +9,10 @@ const SideBarLink = ({
   children: React.ReactNode;
 }) => {
   return (
-    <Link href={href} className="btn btn-ghost normal-case text-xl">
+    <Link
+      href={href}
+      className="btn btn-ghost normal-case text-xl hover:bg-gray-100 rounded my-2"
+    >
       {children}
     </Link>
   );
@@ -38,6 +41,7 @@ const SideBar = ({ children }: { children: React.ReactNode }) => {
           <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
             <li className="mb-2">
               <SideBarLink href="/dashboard">Dashboard</SideBarLink>
+              <SideBarLink href="/kasir">Kasir</SideBarLink>
               <SideBarLink href="/transaksi">Transaksi</SideBarLink>
               <SideBarLink href="/laporan">Laporan</SideBarLink>
               <SideBarLink href="/anggota">Anggota</SideBarLink>

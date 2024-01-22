@@ -1,5 +1,6 @@
 import React from "react";
 import FormAnggota from "@/components/FormAnggota";
+import Link from "next/link";
 
 const AddAnggota = () => {
   return (
@@ -9,7 +10,14 @@ const AddAnggota = () => {
           Add Anggota
         </h1>
         <p className="text-center text-gray-900 mt-4">Add new Anggota</p>
-        <FormAnggota />
+        <div className="flex justify-end my-4">
+          <Link href="/anggota"> Back </Link>
+        </div>
+        <div className="flex justify-center my-4">
+          <div className="card w-[750px] bg-base-100 shadow-xl">
+            <FormAnggota />
+          </div>
+        </div>
       </div>
     </>
   );
