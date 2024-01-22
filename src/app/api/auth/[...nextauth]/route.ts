@@ -13,7 +13,7 @@ dotenv.config({
   path: `.env`,
 });
 
-export const authOption: AuthOptions = {
+const authOption: AuthOptions = {
   adapter: PrismaAdapter(prisma) as Adapter,
   providers: [
     GithubProviders({
