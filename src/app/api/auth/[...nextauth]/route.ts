@@ -1,4 +1,4 @@
-import NextAuth, { DefaultSession, RequestInternal } from "next-auth";
+import NextAuth from "next-auth";
 import GithubProviders from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import GoogleProviders from "next-auth/providers/google";
@@ -13,7 +13,7 @@ dotenv.config({
   path: `.env`,
 });
 
-export const authOptions = {
+export const authOption: any = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GithubProviders({
@@ -70,6 +70,6 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-const handler = NextAuth(authOptions as any);
+const handler = NextAuth(authOption);
 
 export { handler as POST, handler as GET };
