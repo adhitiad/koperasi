@@ -42,6 +42,13 @@ const Pinjamans = () => {
       };
       return tambahPinjaman(dataPinjaman as any);
     },
+    onSuccess: (data) => {
+      alert("Data Berhasil " + status);
+    },
+
+    onError: (error: any) => {
+      alert(error.message);
+    },
   });
 
   const { data: anggotas } = useQuery({
@@ -56,6 +63,7 @@ const Pinjamans = () => {
     data: pinjamans,
     isLoading,
     isError: isErrorPinjaman,
+    isFetching,
   } = useQuery({
     queryKey: ["pinjamans"],
     queryFn: async () => {
@@ -107,6 +115,12 @@ const Pinjamans = () => {
               type="number"
               name="amount"
               placeholder="Amount"
+              className="input input-bordered w-full"
+            />
+            <input
+              type="text"
+              name="description"
+              placeholder="Description"
               className="input input-bordered w-full"
             />
             <select name="anggotaId" className="select select-bordered w-full">
@@ -167,6 +181,21 @@ const Pinjamans = () => {
                 </tr>
               </thead>
               <tbody>
+                {isErrorPinjaman && (
+                  <tr>
+                    <td colSpan={8}>Error : {isErrorPinjaman}</td>{" "}
+                  </tr>
+                )}
+
+                {isFetching && (
+                  <tr>
+                    <td colSpan={8} className="text-center">
+                      <div className="justify-center flex">
+                        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin"></div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
                 {isLoading && (
                   <tr>
                     <td colSpan={8} className="text-center">
