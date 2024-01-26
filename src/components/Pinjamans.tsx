@@ -34,7 +34,6 @@ const Pinjamans = () => {
         kegunaan: data.kegunaan,
         bunga: Number(data.bunga),
         anggotaId: data.anggotaId,
-
         tenor: Number(data.tenor),
         jatuhTempo: new Date(data.jatuhTempo),
         totalBayar:
@@ -117,18 +116,13 @@ const Pinjamans = () => {
                 </option>
               ))}
             </select>
-            <input
-              type="text"
-              name="description"
-              placeholder="Description"
-              className="input input-bordered w-full"
-            />
-            <input
-              type="text"
-              name="kegunaan"
-              placeholder="Kegunaan"
-              className="input input-bordered w-full"
-            />
+
+            <select name="kegunaan" className="select select-bordered w-full">
+              <option value="keperluan pendidikan">Keperluan Pendidikan</option>
+              <option value="keperluan kesehatan">Keperluan Kesehatan</option>
+              <option value="keperluan pribadi">Keperluan Pribadi</option>
+              <option value="keperluan bisnis">Keperluan Bisnis</option>
+            </select>
             <input
               type="number"
               name="bunga"
@@ -136,9 +130,12 @@ const Pinjamans = () => {
               className="input input-bordered w-full"
             />
             <select name="tenor" className="select select-bordered w-full">
+              <option value="1">1 Bulan</option>
+              <option value="3">3 Bulan</option>
               <option value="6">6 Bulan</option>
               <option value="12">12 Bulan</option>
               <option value="24">24 Bulan</option>
+              <option value="36">36 Bulan</option>
             </select>
             <input
               type="date"
@@ -161,12 +158,12 @@ const Pinjamans = () => {
                 <tr>
                   <th>No</th>
                   <th>Amount</th>
-                  <th>Description</th>
                   <th>Kegunaan</th>
                   <th>Bunga</th>
                   <th>Tenor</th>
                   <th>Jatuh Tempo</th>
                   <th>Total Bayar</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
