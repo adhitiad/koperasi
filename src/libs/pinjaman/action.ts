@@ -16,3 +16,16 @@ export const tambahPinjaman = async (pinjaman: any) => {
     throw new Error(error);
   }
 };
+
+export const hapusPinjaman = async (id: string) => {
+  try {
+    const newPinjaman = await prisma.credit.delete({
+      where: {
+        id,
+      },
+    });
+    return newPinjaman;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};

@@ -1,7 +1,11 @@
 "use client";
 import { getAnggota } from "@/libs/anggota/action";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { getPinjaman, tambahPinjaman } from "@/libs/pinjaman/action";
+import {
+  getPinjaman,
+  tambahPinjaman,
+  hapusPinjaman,
+} from "@/libs/pinjaman/action";
 import React from "react";
 
 interface Pinjaman {
@@ -75,6 +79,15 @@ const Pinjamans = () => {
     };
     console.log(form);
     tambah(form);
+  };
+
+  const handleDelete = async (id: any) => {
+    await hapusPinjaman(id);
+    const res = await getPinjaman();
+    alert(res + " Berhasil" + " Dihapus" + status);
+    setTimeout(() => {
+      window.location.reload();
+    }, 800);
   };
 
   if (isSuccess) {
@@ -188,7 +201,10 @@ const Pinjamans = () => {
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
                     </td>
                     <td>
-                      <button className="btn btn-primary" onClick={() => {}}>
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => handleDelete(data.id)}
+                      >
                         Hapus
                       </button>
                     </td>
