@@ -4,6 +4,7 @@ import "./globals.css";
 import NavBar from "@/components/NavBar";
 import QueryProviders from "./QueryProviders";
 import ProviderAuth from "@/utils/ProviderAuth";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <QueryProviders>
+          <SpeedInsights />
           <ProviderAuth>
             <NavBar />
             {children}

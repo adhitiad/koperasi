@@ -7,9 +7,6 @@ import {
   hapusPinjaman,
 } from "@/libs/pinjaman/action";
 import React from "react";
-import { getTransaksi, tambahTransaksi } from "@/libs/transaksi/action";
-import Transaksi from "@/app/(site)/transaksi/page";
-import { getUser } from "@/libs/user/action";
 
 interface Pinjaman {
   amount: number;
@@ -20,13 +17,6 @@ interface Pinjaman {
   tenor: number;
   jatuhTempo: Date;
   totalBayar: number;
-}
-
-interface Transaksies {
-  totalAmount: number;
-  totalItems: number;
-  jenisTransaksi: string;
-  itemsJenis: string;
 }
 
 const Pinjamans = () => {
@@ -51,17 +41,6 @@ const Pinjamans = () => {
           (1 + Number(data.bunga) / 100) ** Number(data.tenor),
       };
 
-      const datas: Transaksies = await tambahTransaksi({
-        userId: user,
-        // transaksiDate: new Date(data.jatuhTempo),
-        totalAmount: Number(data.amount),
-        anggotaId: data.anggotaId,
-        totalItems: 0,
-        jenisTransaksi: "Pinjaman",
-        itemsJenis: "credit",
-      });
-
-      alert("Data Berhasil " + status + " Berhasil " + datas);
       return tambahPinjaman(dataPinjaman as any);
     },
     onSuccess: (data: any) => {
@@ -70,21 +49,6 @@ const Pinjamans = () => {
 
     onError: (data: string) => {
       alert("Data Tidak Berasil " + status + " " + data);
-    },
-  });
-
-  const {
-    data: user,
-    isLoading: isLoadingUser,
-    isError: isErrorUser,
-  } = useQuery({
-    queryKey: ["user"],
-    queryFn: async () => {
-      const data = await getUser();
-
-      const id = data[0].id;
-
-      return id;
     },
   });
 
