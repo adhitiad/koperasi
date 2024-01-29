@@ -1,8 +1,16 @@
 const dotThree = (number: { toString: () => string }) =>
-  number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  number
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+    .toLowerCase();
 
-const numberFormat = {
-  dotThree,
+const numberFormatter = (value: number) => {
+  const formatter = new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  });
+  return formatter.format(value);
 };
 
-export default numberFormat;
+export { dotThree, numberFormatter };
