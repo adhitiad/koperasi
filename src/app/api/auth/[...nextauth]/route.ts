@@ -6,11 +6,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/libs/prisma";
 import { Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import * as dotenv from "dotenv";
-
-dotenv.config({
-  path: `.env`,
-});
+import "dotenv/config";
 
 const authOption = {
   adapter: PrismaAdapter(prisma),
@@ -76,6 +72,13 @@ const authOption = {
     jwt: {
       secret: process.env.JWT_SECRET,
       maxAge: 60 * 60 * 24 * 30,
+    },
+    callbacks: {
+      async session(session: any, user: any) {
+        session.user.role =
+          (user?.role as Role) || Role.SUPERADMIN || Role.ADMIN;
+        return session;
+      },
     },
   },
 };

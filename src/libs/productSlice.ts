@@ -1,31 +1,24 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { create } from "zustand";
 
-const initialState = {
-  productsItem: [],
+export const useProductSlice = create((set) => ({
+  products: [],
+  setProducts: (products: any) => set({ products }),
+  clearProducts: () => set({ products: [] }),
+  search: "",
+  setSearch: (search: string) => set({ search }),
+  clearSearch: () => set({ search: "" }),
+  query: "",
+  setQuery: (query: string) => set((state: any) => ({ ...state, query })),
+  clearQuery: () => set({ query: "" }),
+  selectedProduct: {},
+  setSelectedProduct: (selectedProduct: any) => set({ selectedProduct }),
+  clearSelectedProduct: () => set({ selectedProduct: {} }),
   loading: false,
-  error: null,
-};
+  setLoading: (loading: boolean) => set({ loading }),
+  error: "",
+  setError: (error: string) => set({ error }),
+}));
 
-export const productSlice = createSlice({
-  name: "product",
-  initialState,
-  reducers: {
-    setProductsStart: (state: any) => {
-      state.loading = true;
-      state.error = null;
-    },
-    setProductsSuccess: (state: any, action) => {
-      state.loading = false;
-      state.productItems = action.payload;
-    },
-    setProductsError: (state, action) => {
-      state.loading = false;
-      state.error = action.payload;
-    },
-  },
-});
-
-export const { setProductsStart, setProductsSuccess, setProductsError } =
-  productSlice.actions;
-
-export default productSlice.reducer;
+export const selectProduct = (state: any) => state.productSlice.products;
+export const selectQuery = (state: any) => state.productSlice.query;
+export const setSearch = (state: any) => state.productSlice.search;
