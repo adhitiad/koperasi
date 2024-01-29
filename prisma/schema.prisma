@@ -51,6 +51,8 @@ model User {
   verificationTokenToken String?
   UserSettings           UserSettings?
   UserHistory            UserHistory?
+  Transaksi              Transaksi?         @relation(fields: [transaksiId], references: [id])
+  transaksiId            String?
 
   @@index([verificationTokenToken])
 }
@@ -211,13 +213,13 @@ model BukuBesar {
 
 model Transaksi {
   id             String   @id @default(cuid())
-  userId         String
   transaksiDate  DateTime
   totalAmount    Int
   totalItems     Int
   jenisTransaksi String
   itemsJenis     String
 
+  user      User[]
   Order     Order[]
   BukuBesar BukuBesar[]
   products  Product[]

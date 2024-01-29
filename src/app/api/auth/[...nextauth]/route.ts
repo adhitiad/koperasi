@@ -37,7 +37,7 @@ const authOption = {
           placeholder: "••••••••••",
         },
       },
-      async authorize(credentials: any, req) {
+      async authorize(credentials: any, req: any) {
         if (!credentials.email || !credentials.password) {
           throw new Error("Please enter an email and password");
         }
@@ -79,6 +79,8 @@ const authOption = {
     },
   },
 };
+
+export const authOptions = authOption;
 
 const handler = NextAuth(authOption as NextAuthOptions as AuthOptions);
 
