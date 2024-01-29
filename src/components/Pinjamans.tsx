@@ -42,12 +42,12 @@ const Pinjamans = () => {
       };
       return tambahPinjaman(dataPinjaman as any);
     },
-    onSuccess: (data) => {
-      alert("Data Berhasil " + status);
+    onSuccess: (data: any) => {
+      alert("Data Berhasil " + status + " Berhasil " + data);
     },
 
-    onError: (error: any) => {
-      alert(error.message);
+    onError: (data) => {
+      alert("Data Tidak Berasil " + status + " " + data);
     },
   });
 

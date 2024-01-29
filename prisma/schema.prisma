@@ -216,6 +216,7 @@ model Transaksi {
   totalAmount    Int
   totalItems     Int
   jenisTransaksi String
+  itemsJenis     String
 
   Order     Order[]
   BukuBesar BukuBesar[]

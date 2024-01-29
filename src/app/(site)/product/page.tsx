@@ -12,7 +12,7 @@ const getProducts = async () => {
       name: faker.commerce.productName(),
       description: faker.commerce.productDescription(),
       price: faker.commerce.price(),
-      image: faker.image.abstract(),
+      image: faker.image.avatarGitHub(),
       button: "Add to cart",
       href: "#",
     };

@@ -11,9 +11,9 @@ const SideBarLink = ({
   return (
     <Link
       href={href}
-      className="btn btn-ghost normal-case text-xl hover:bg-gray-100 rounded my-2"
+      className="btn btn-outline btn-accent btn-sm normal-case text-xs hover:bg-gray-100 rounded my-1"
     >
-      {children}
+      <span className="text-gray-200 text-center">{children}</span>
     </Link>
   );
 };

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import NavBar from "@/components/NavBar";
-import Redux from "./Redux";
 import QueryProviders from "./QueryProviders";
 import ProviderAuth from "@/utils/ProviderAuth";
 
@@ -21,14 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Redux>
-          <QueryProviders>
-            <ProviderAuth>
-              <NavBar />
-              {children}
-            </ProviderAuth>
-          </QueryProviders>
-        </Redux>
+        <QueryProviders>
+          <ProviderAuth>
+            <NavBar />
+            {children}
+          </ProviderAuth>
+        </QueryProviders>
       </body>
     </html>
   );

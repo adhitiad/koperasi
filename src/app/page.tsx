@@ -7,7 +7,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold underline text-white">
         Welcome to Koperasi
       </h1>
-      <Link href="/dashboard" className="text-white">
+      <Link href="/dashboard" className="text-white btn btn-info">
         Dashboard
       </Link>
     </div>
