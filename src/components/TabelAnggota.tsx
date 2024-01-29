@@ -175,19 +175,12 @@ const TabelAnggota = () => {
           </tbody>
         </table>
         {/* PAGINATION */}
-        <div className="flex items-center justify-center mt-4">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
-            onClick={handlePrevPage}
-          >
-            Prev
-          </button>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full mx-2"
-            onClick={handleNext}
-          >
-            Next
-          </button>
+        <div className="flex justify-center items-center my-4">
+          <div className="join ">
+            <button className="join-item btn">«</button>
+            <button className="join-item btn">Page 22</button>
+            <button className="join-item btn">»</button>
+          </div>
         </div>
       </div>
     </>
