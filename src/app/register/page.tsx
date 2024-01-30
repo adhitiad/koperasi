@@ -2,6 +2,7 @@
 import { Role } from "@prisma/client";
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import React from "react";
 
 const Register = () => {
@@ -33,9 +34,14 @@ const Register = () => {
   });
 
   if (isSuccess) {
-    signIn("credentials", {
-      redirect: true,
-    });
+    return (
+      <p>
+        Success register. Please login now{" "}
+        <Link href="/api/auth/signin" className="btn btn-primary">
+          Login
+        </Link>
+      </p>
+    );
   }
 
   if (isError) {
